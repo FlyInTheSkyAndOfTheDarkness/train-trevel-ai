@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?  // hashed for credentials
+  createdAt DateTime @default(now())
+
+  accounts  Account[]
+  sessions  Session[]
+  searches  Search[]
+  favorites FavoriteRoute[]
+  holds     Hold[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @map("refresh_token")
+  access_token      String? @map("access_token")
+  expires_at        Int?    @map("expires_at")
+  token_type        String? @map("token_type")
+  scope             String?
+  id_token          String? @map("id_token")
+  session_state     String? @map("session_state")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Search {
+  id              String   @id @default(cuid())
+  userId          String?
+  originId        String
+  originName      String
+  destinationId   String
+  destinationName String
+  dateOut         DateTime
+  dateBack        DateTime?
+  passengers      Int
+  createdAt       DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model FavoriteRoute {
+  id              String @id @default(cuid())
+  userId          String
+  originId        String
+  originName      String
+  destinationId   String
+  destinationName String
+  notes           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Hold {
+  id         String   @id @default(cuid())
+  userId     String
+  tripId     String
+  date       DateTime
+  classCode  String?
+  priceMinor Int
+  currency   String
+  status     HoldStatus @default(CREATED)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum HoldStatus {
+  CREATED
+  CANCELLED
+}
+
+model AiAdviceLog {
+  id            String   @id @default(cuid())
+  userId        String?
+  queryHash     String
+  originId      String
+  destinationId String
+  month         String?
+  payload       Json
+  createdAt     DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
