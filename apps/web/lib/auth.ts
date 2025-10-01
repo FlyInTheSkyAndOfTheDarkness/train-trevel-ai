@@ -30,11 +30,29 @@ export const { handlers: authHandlers, auth, signIn, signOut } = NextAuth({
       },
       async sendVerificationRequest({ identifier, url }) {
         const transport = nodemailer.createTransport({
-          host: 'localhost',
-          port: 1025,
-          secure: false
+          host: env.EMAIL_SERVER_HOST,
+          port: env.EMAIL_SERVER_PORT,
+          secure: false,
+          auth: env.EMAIL_SERVER_USER ? {
+            user: env.EMAIL_SERVER_USER,
+            pass: env.EMAIL_SERVER_PASSWORD
+          } : undefined
         });
-        await transport.sendMail({ to: identifier, from: 'no-reply@traintravel.ai', subject: 'Login to TrainTravel AI', html: `<a href="${url}">Sign in</a>` });
+        await transport.sendMail({ 
+          to: identifier, 
+          from: env.EMAIL_FROM, 
+          subject: 'Вход в TrainTravel AI', 
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2>Добро пожаловать в TrainTravel AI!</h2>
+              <p>Для входа в систему нажмите на ссылку ниже:</p>
+              <a href="${url}" style="display: inline-block; background: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px;">Войти в систему</a>
+              <p style="margin-top: 20px; color: #666; font-size: 14px;">
+                Если вы не запрашивали вход, проигнорируйте это письмо.
+              </p>
+            </div>
+          `
+        });
       }
     })
   ],

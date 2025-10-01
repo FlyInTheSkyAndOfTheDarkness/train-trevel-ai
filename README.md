@@ -1,56 +1,136 @@
-# TrainTravel AI (Monorepo)
+# TrainTravel AI
 
-Train tickets search app with AI advice (when to buy cheaper), built with Next.js 14, Prisma, NextAuth, Tailwind, next-intl, Redis cache, and OpenAI.
+Продакшн-готовый моно-репозиторий веб-приложения для поиска и покупки ЖД билетов с ИИ-ассистентом.
 
-## Structure
-- apps/web: Next.js app (App Router) with API routes, Prisma, providers, UI
+## 🚀 Быстрый старт
 
-## Quick start
-1) Install deps and start Postgres/Redis:
+### 1. Установка зависимостей
+
+```bash
+npm install
 ```
-pnpm i
+
+### 2. Настройка окружения
+
+```bash
+cd apps/web
+cp env.example .env
+# Заполните переменные окружения
+```
+
+### 3. Запуск базы данных
+
+```bash
 cd apps/web
 docker-compose up -d
 ```
-2) Copy env and fill:
-```
+
+### 4. Настройка базы данных
+
+```bash
 cd apps/web
-cp .env.example .env
-# set DATABASE_URL and NEXTAUTH_SECRET
+npm run prisma:generate
+npm run prisma:migrate:dev
 ```
-3) Migrate and run:
-```
+
+### 5. Запуск приложения
+
+```bash
 cd apps/web
-pnpm prisma migrate dev
-pnpm dev
+npm run dev
 ```
-Open http://localhost:3000
 
-## Providers
-- Rail data provider interface in `apps/web/lib/rail/`. Default `mock` works out of the box. To add real API, copy `providerTemplate.ts` and set `RAIL_PROVIDER`.
+Приложение будет доступно по адресу: http://localhost:3000
 
-## AI advice
-- Logic in `apps/web/lib/ai/suggest.ts`. Uses OpenAI and optional SERPAPI. Caches for 6h (Redis or in-memory).
+## 📋 Основные переменные окружения
 
-## Auth
-- NextAuth (credentials + email magic link). Prisma Adapter enabled. For local email, run a dev SMTP like MailHog on `localhost:1025`.
-
-## Environment (apps/web/.env)
-```
-NEXTAUTH_SECRET=changeme
+```env
+NEXTAUTH_SECRET=your-secret-key
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/traintravel
 RAIL_PROVIDER=mock
-RAIL_API_BASE=
-RAIL_API_KEY=
-REDIS_URL=
-REDIS_TOKEN=
-OPENAI_API_KEY=
-SERPAPI_API_KEY=
-AI_MODEL=gpt-4o-mini
+OPENAI_API_KEY=your-openai-key
+SERPAPI_API_KEY=your-serpapi-key
 ```
 
-## Deploy
-- Set env vars and external Postgres/Redis on Vercel/Render/Fly. Dockerfile provided in `apps/web/Dockerfile`.
+## 🏗️ Структура проекта
 
-## Disclaimer
-- Demo only: no payments, mock data not real. Do not use for real sales.
+```
+├── apps/
+│   └── web/                 # Next.js приложение
+│       ├── app/            # App Router
+│       ├── components/     # React компоненты
+│       ├── lib/           # Утилиты и логика
+│       ├── prisma/        # База данных
+│       └── tests/         # Тесты
+├── package.json           # Корневой package.json
+└── README.md             # Этот файл
+```
+
+## 🚂 Провайдеры ЖД данных
+
+- **Mock провайдер** (по умолчанию) - работает из коробки
+- **Единый интерфейс** для подключения реальных API
+- **Шаблон** в `apps/web/lib/rail/providers/providerTemplate.ts`
+
+## 🤖 ИИ-ассистент
+
+- Подсказки по выгодным датам покупки
+- Интеграция с OpenAI и SERPAPI
+- Кэширование результатов
+- Логика в `apps/web/lib/ai/suggest.ts`
+
+## 🔐 Аутентификация
+
+- NextAuth v5 с credentials и email magic link
+- Prisma Adapter для хранения сессий
+- Готовность к OAuth провайдерам
+
+## 🌐 Интернационализация
+
+- Поддержка ru, kk, en
+- next-intl для локализации
+- Переводы в `apps/web/app/i18n.ts`
+
+## 🧪 Тестирование
+
+```bash
+cd apps/web
+npm test
+```
+
+## 🐳 Docker
+
+```bash
+cd apps/web
+docker-compose up -d
+```
+
+## 🚀 Деплой
+
+Поддерживается деплой на:
+- Vercel
+- Render
+- Fly.io
+- Любую платформу с поддержкой Node.js
+
+## ⚠️ Ограничения
+
+- **Демонстрационный проект** - без реальных платежей
+- **Тестовые данные** - цены и расписания фиктивные
+- **Образовательные цели** - для изучения архитектуры
+
+## 📚 Документация
+
+Подробная документация доступна в `apps/web/README.md`
+
+## 🤝 Вклад в проект
+
+1. Форкните репозиторий
+2. Создайте feature branch
+3. Внесите изменения
+4. Добавьте тесты
+5. Создайте Pull Request
+
+## 📄 Лицензия
+
+MIT License

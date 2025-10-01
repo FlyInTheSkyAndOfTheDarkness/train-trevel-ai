@@ -2,13 +2,15 @@
   "name": "traintravel-ai-monorepo",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "build": "pnpm -r build",
-    "dev": "pnpm -r --filter ./apps/web dev",
-    "lint": "pnpm -r lint",
-    "test": "pnpm -r test",
-    "postinstall": "pnpm -r postinstall"
-  }
+    "build": "npm run build --workspace=apps/web",
+    "dev": "npm run dev --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web",
+    "test": "npm run test --workspace=apps/web",
+    "postinstall": "npm run postinstall --workspace=apps/web"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
 }
 

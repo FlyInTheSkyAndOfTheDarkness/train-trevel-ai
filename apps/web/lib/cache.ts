@@ -42,7 +42,10 @@ export function makeRateLimiter(limit: number, windowSeconds: number) {
     const arr = (buckets.get(identifier) ?? []).filter((t) => now - t < win);
     arr.push(now);
     buckets.set(identifier, arr);
-    return { success: arr.length <= limit } as { success: boolean };
+    return { success: arr.length <= limit, limit, remaining: Math.max(0, limit - arr.length) } as { success: boolean; limit: number; remaining: number };
   };
 }
+
+// Default rate limiter for API routes
+export const rateLimit = makeRateLimiter(env.RATE_LIMIT_REQUESTS, env.RATE_LIMIT_WINDOW);
 

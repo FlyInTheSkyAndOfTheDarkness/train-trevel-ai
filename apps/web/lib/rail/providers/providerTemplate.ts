@@ -32,7 +32,7 @@ export const providerTemplate: RailProvider = {
     return [];
   },
 
-  async getCheapestCalendar?.({ originId, destinationId, month }: { originId: string; destinationId: string; month: string }) {
+  async getCheapestCalendar({ originId, destinationId, month }: { originId: string; destinationId: string; month: string }) {
     void originId; void destinationId; void month;
     // Example optional endpoint for monthly price calendar
     return [] as { date: string; minPriceMinor: number; currency: string }[];
